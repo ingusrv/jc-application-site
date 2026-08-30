@@ -1,0 +1,30 @@
+services:
+  swa:
+    build:
+      context: .
+      dockerfile: Dockerfile.swa
+    container_name: jc-swa-emulator
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+    command: [ "swa", "start", "http://host.docker.internal:5173", "--host", "localhost", "--port", "4280" ]
+
+  # Optional local Microsoft SQL Server for local offline testing (Azure SQL compatible)
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: jc-mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${LOCAL_DB_SA_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+volumes:
+  mssql-data:

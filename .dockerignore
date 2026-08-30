@@ -1,0 +1,8 @@
+node_modules
+.env
+.git
+.github
+build
+.svelte-kit
+drizzle
+npm-debug.log

@@ -1,0 +1,101 @@
+import { error, redirect } from '@sveltejs/kit';
+import { getDb } from '$lib/server/db';
+import { clubsTable, type Club } from '$lib/server/db/schema';
+import type { PageServerLoad, Actions } from './$types';
+import { desc, eq } from 'drizzle-orm';
+import { requireRole } from '$lib/server/auth';
+
+export const load: PageServerLoad = async ({ fetch }) => {
+    await requireRole(fetch, 'authenticated');
+
+    try {
+        const db = await getDb();
+        const clubs = await db
+            .select()
+            .from(clubsTable) as Club[];
+
+        return {
+            clubs: clubs,
+        };
+    } catch (err: any) {
+        console.error("Database error while fetching clubs:", err);
+        return {
+            clubs: [],
+        };
+    }
+}
+
+export const actions: Actions = {
+    createClub: async ({ request }) => {
+        const formData = await request.formData();
+        const name = formData.get('name') as string;
+        const minGrade = parseInt(formData.get('minGrade') as string, 10);
+        const maxGrade = parseInt(formData.get('maxGrade') as string, 10);
+        const maxParticipants = parseInt(formData.get('maxParticipants') as string, 10);
+        const schedule = formData.get('schedule') as string;
+        const description = formData.get('description') as string;
+
+        console.log("Creating club with data:", { name, minGrade, maxGrade, maxParticipants, schedule, description });
+
+        try {
+            const db = await getDb();
+            await db.insert(clubsTable).values({
+                name,
+                minGrade: minGrade,
+                maxGrade: maxGrade,
+                maxParticipants,
+                description,
+                schedule,
+            });
+
+            return { success: true };
+        } catch (err: any) {
+            console.error("Database error while adding club:", err);
+            return { success: false, error: err?.message || "Datubāze nav pieejama" };
+        }
+    },
+    updateClub: async ({ request }) => {
+        const formData = await request.formData();
+        const id = parseInt(formData.get('id') as string, 10);
+        const name = formData.get('name') as string;
+        const minGrade = parseInt(formData.get('minGrade') as string, 10);
+        const maxGrade = parseInt(formData.get('maxGrade') as string, 10);
+        const maxParticipants = parseInt(formData.get('maxParticipants') as string, 10);
+        const schedule = formData.get('schedule') as string;
+        const description = formData.get('description') as string;
+
+        try {
+            const db = await getDb();
+            await db.update(clubsTable)
+                .set({
+                    name,
+                    minGrade,
+                    maxGrade,
+                    maxParticipants,
+                    schedule,
+                    description,
+                })
+                .where(eq(clubsTable.id, id));
+
+            return { success: true };
+        } catch (err: any) {
+            console.error("Database error while editing club:", err);
+            return { success: false, error: err?.message || "Datubāze nav pieejama" };
+        }
+    },
+    deleteClub: async ({ request }) => {
+        const formData = await request.formData();
+        const id = parseInt(formData.get('id') as string, 10);
+
+        try {
+            const db = await getDb();
+            await db.delete(clubsTable)
+                .where(eq(clubsTable.id, id));
+
+            return { success: true };
+        } catch (err: any) {
+            console.error("Database error while deleting club:", err);
+            return { success: false, error: err?.message || "Datubāze nav pieejama" };
+        }
+    },
+};
