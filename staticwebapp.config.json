@@ -3,25 +3,25 @@
     {
       "route": "/pieteikumi",
       "allowedRoles": [
-        "authenticated"
+        "admin"
       ]
     },
     {
       "route": "/pieteikumi/*",
       "allowedRoles": [
-        "authenticated"
+        "admin"
       ]
     },
     {
       "route": "/pulcini",
       "allowedRoles": [
-        "authenticated"
+        "admin"
       ]
     },
     {
       "route": "/pulcini/*",
       "allowedRoles": [
-        "authenticated"
+        "admin"
       ]
     }
   ],
