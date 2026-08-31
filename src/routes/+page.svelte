@@ -22,15 +22,14 @@
         User,
         Users,
         GraduationCap,
-        ShieldCheck,
-        CheckCircle2,
-        AlertCircle,
-        Loader2,
+        CircleCheck,
+        CircleAlert,
+        LoaderCircle,
         Send,
         Copyright,
         Check,
         ChevronDown,
-    } from "lucide-svelte";
+    } from "@lucide/svelte";
     import { untrack } from "svelte";
     import type { ClubWithApplicationCount } from "./+page.server";
     import { authRedirectUri } from "$lib/authUri";
@@ -97,7 +96,7 @@
                 class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-950 dark:text-emerald-200 flex items-start gap-3 shadow-xs"
                 role="status"
             >
-                <CheckCircle2
+                <CircleCheck
                     class="size-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5"
                 />
                 <div class="text-sm">
@@ -112,7 +111,7 @@
                 class="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-destructive flex items-start gap-3 shadow-xs"
                 role="alert"
             >
-                <AlertCircle class="size-5 shrink-0 mt-0.5" />
+                <CircleAlert class="size-5 shrink-0 mt-0.5" />
                 <div class="text-sm space-y-1">
                     <p class="font-semibold">
                         Lūdzu, izlabojiet kļūdas veidlapā:
@@ -811,7 +810,7 @@
                         class="w-full sm:w-auto min-w-44 gap-2 font-medium"
                     >
                         {#if $delayed}
-                            <Loader2 class="size-4 animate-spin" />
+                            <LoaderCircle class="size-4 animate-spin" />
                             <span>Nosūta...</span>
                         {:else}
                             <Send class="size-4" />
