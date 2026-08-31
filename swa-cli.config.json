@@ -1,11 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/static-web-apps-cli/main/schema/swa-cli.config.json",
   "configurations": {
-    "jc-application-form": {
+    "jc-application-site": {
       "appLocation": "./",
       "apiLocation": "build/server",
       "outputLocation": "build/static",
-      "appDevserverUrl": "http://localhost:5173",
+      "appDevserverUrl": "http://localhost:4173",
       "host": "localhost",
       "port": 4280
     }

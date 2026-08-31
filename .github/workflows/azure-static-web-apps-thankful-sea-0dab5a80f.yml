@@ -42,12 +42,10 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
 
-          app_location: "/"
+          app_location: "build/static"
           api_location: "build/server"
-          output_location: "build/static"
 
-          app_build_command: "npm run build"
-          skip_app_build: false
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
