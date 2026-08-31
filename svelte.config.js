@@ -31,6 +31,9 @@ const config = {
 						"redirect": "/.auth/login/aad?post_login_redirect_uri=/pieteikumi"
 					}
 				},
+				"platform": {
+					"apiRuntime": "node:22"
+				},
 			}
 		}),
 		alias: {
