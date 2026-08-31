@@ -46,8 +46,6 @@ jobs:
           # svelte-adapter-azure-swa.
           app_location: "build/static"
           api_location: "build/server"
-          output_location: ""
-          routes_location: "/"
 
           skip_app_build: true
 
