@@ -44,8 +44,9 @@ jobs:
 
           # These are already-built directories produced by
           # svelte-adapter-azure-swa.
-          app_location: "build/static"
+          app_location: "./"
           api_location: "build/server"
+          output_location: "build/static"
 
           skip_app_build: true
 
