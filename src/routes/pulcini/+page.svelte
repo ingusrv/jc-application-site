@@ -8,8 +8,10 @@
     import { Label } from "$lib/components/ui/label/index";
     import { enhance } from "$app/forms";
     import { Textarea } from "$lib/components/ui/textarea/index";
+    import { X } from "@lucide/svelte";
 
-    let { data }: { data: { clubs: Club[] } } = $props();
+    let { data }: { data: { clubs: Club[]; errorMessage: string | null } } =
+        $props();
     let editingClub = $state<Club | null>(null);
     let dialogOpen = $state(false);
 
@@ -27,14 +29,20 @@
     };
 </script>
 
+<svelte:head>
+    <title>Pulciņi</title>
+</svelte:head>
+
 <Button variant="link" href="/pieteikumi">Skatīt pieteikumus</Button>
 <Button
     variant="default"
     onclick={() => {
         editingClub = null;
         dialogOpen = true;
-    }}>Pievienot jaunu pulciņu</Button
+    }}
 >
+    Pievienot jaunu pulciņu
+</Button>
 
 <Table.Root>
     <Table.Caption>Pulciņu tabula</Table.Caption>
@@ -66,13 +74,27 @@
                         onclick={() => {
                             editingClub = club;
                             dialogOpen = true;
-                        }}>Rediģēt</Button
+                        }}
                     >
+                        Rediģēt
+                    </Button>
                 </Table.Cell>
             </Table.Row>
         {/each}
     </Table.Body>
 </Table.Root>
+
+{#if data.errorMessage}
+    <div
+        class="rounded-xl border border-destructive/30 bg-destructive/10 p-4 col-span-full flex items-center gap-3 shadow-xs"
+        role="alert"
+    >
+        <X class="size-5 shrink-0 text-destructive" />
+        <p class="text-sm font-medium text-destructive">
+            {data.errorMessage}
+        </p>
+    </div>
+{/if}
 
 <Dialog.Root bind:open={dialogOpen}>
     <Dialog.Content>

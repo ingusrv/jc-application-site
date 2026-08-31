@@ -10,29 +10,38 @@ const config = {
 				routes: [
 					{
 						route: "/pieteikumi",
-						allowedRoles: ["admin"]
+						allowedRoles: ["admin"],
+						methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"],
+						rewrite: "/api/sk_render"
 					},
 					{
 						route: "/pieteikumi/*",
-						allowedRoles: ["admin"]
+						allowedRoles: ["admin"],
+						methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"],
+						rewrite: "/api/sk_render"
 					},
 					{
 						route: "/pulcini",
-						allowedRoles: ["admin"]
+						allowedRoles: ["admin"],
+						methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"],
+						rewrite: "/api/sk_render"
 					},
 					{
 						route: "/pulcini/*",
-						allowedRoles: ["admin"]
+						allowedRoles: ["admin"],
+						methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"],
+						rewrite: "/api/sk_render"
 					}
 				],
 				responseOverrides: {
 					"401": {
 						"statusCode": 302,
-						"redirect": "/.auth/login/aad?post_login_redirect_uri=/pieteikumi"
+						"redirect": "/"
+					},
+					"403": {
+						"statusCode": 302,
+						"redirect": "/"
 					}
-				},
-				"platform": {
-					"apiRuntime": "node:22"
 				},
 			}
 		}),

@@ -2,11 +2,20 @@
     import { type Application } from "$lib/server/db/schema";
     import * as Table from "$lib/components/ui/table/index";
     import { Button } from "$lib/components/ui/button/index";
+    import { X } from "@lucide/svelte";
 
-    let { data }: { data: { applications: Application[] } } = $props();
+    let {
+        data,
+    }: { data: { applications: Application[]; errorMessage: string | null } } =
+        $props();
+
     let editingApplication = $state<Application | null>(null);
     let dialogOpen = $state(false);
 </script>
+
+<svelte:head>
+    <title>Pieteikumi</title>
+</svelte:head>
 
 <Button variant="link" href="/">Sākumlapa</Button>
 <Button variant="link" href="/.auth/logout">Iziet</Button>
@@ -61,3 +70,15 @@
         {/each}
     </Table.Body>
 </Table.Root>
+
+{#if data.errorMessage}
+    <div
+        class="rounded-xl border border-destructive/30 bg-destructive/10 p-4 col-span-full flex items-center gap-3 shadow-xs"
+        role="alert"
+    >
+        <X class="size-5 shrink-0 text-destructive" />
+        <p class="text-sm font-medium text-destructive">
+            {data.errorMessage}
+        </p>
+    </div>
+{/if}

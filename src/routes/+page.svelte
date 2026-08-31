@@ -11,7 +11,7 @@
     import {
         applicationFormSchema,
         type ApplicationFormSchema,
-    } from "./schema";
+    } from "./applicationFormSchema";
     import {
         superForm,
         type SuperValidated,
@@ -29,6 +29,7 @@
         Copyright,
         Check,
         ChevronDown,
+        X,
     } from "@lucide/svelte";
     import { untrack } from "svelte";
     import type { ClubWithApplicationCount } from "./+page.server";
@@ -37,7 +38,11 @@
     let {
         data,
     }: {
-        data: { form: SuperValidated<any>; clubs: ClubWithApplicationCount[] };
+        data: {
+            form: SuperValidated<any>;
+            clubs: ClubWithApplicationCount[];
+            errorMessage: string | null;
+        };
     } = $props();
 
     const form = superForm(
@@ -46,13 +51,11 @@
             dataType: "json",
             validators: zod4Client(applicationFormSchema),
             onResult: ({ result }) => {
-                if (result.type === "success") {
-                    document.getElementById("form-title")?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                    });
-                    document.getElementById("form-title")?.focus();
-                }
+                document.getElementById("form-title")?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+                document.getElementById("form-title")?.focus();
             },
         },
     );
@@ -68,7 +71,7 @@
 </script>
 
 <svelte:head>
-    <title>Pieteikuma anketa JC pulciņiem</title>
+    <title>Pieteikuma anketa Jaunrades centra pulciņiem</title>
 </svelte:head>
 
 <main class="bg-background">
@@ -119,7 +122,6 @@
                     <ul class="list-disc list-inside text-xs space-y-0.5">
                         {#each $allErrors as err}
                             <li>
-                                <span class="font-medium">{err.path}:</span>
                                 {err.messages.join(", ")}
                             </li>
                         {/each}
@@ -675,30 +677,6 @@
                                                     <ChevronDown
                                                         class="size-4 transition-transform duration-200 group-data-[state=open]/read-more:rotate-180"
                                                     />
-                                                    <!-- {#snippet child({ props })}
-                                                        <Button
-                                                            {...props}
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            class="group/read-more w-full justify-between px-2"
-                                                            onclick={(
-                                                                event,
-                                                            ) => {
-                                                                // Don't select the card when
-                                                                // clicking "Lasīt vairāk".
-                                                                event.stopPropagation();
-                                                            }}
-                                                        >
-                                                            <span
-                                                                >Lasīt vairāk</span
-                                                            >
-
-                                                            <ChevronDown
-                                                                class="size-4 transition-transform duration-200 group-data-[state=open]/read-more:rotate-180"
-                                                            />
-                                                        </Button>
-                                                    {/snippet} -->
                                                 </Collapsible.Trigger>
 
                                                 <Collapsible.Content
@@ -738,6 +716,24 @@
                                             {/if}
                                         </Card.Footer>
                                     </Card.Root>
+                                {:else}
+                                    <div
+                                        class="rounded-xl border border-destructive/30 bg-destructive/10 p-4 col-span-full flex items-center gap-3 shadow-xs"
+                                        role="alert"
+                                    >
+                                        <X
+                                            class="size-5 shrink-0 text-destructive"
+                                        />
+                                        <p
+                                            class="text-sm font-medium text-destructive"
+                                        >
+                                            {#if data.errorMessage}
+                                                {data.errorMessage}
+                                            {:else}
+                                                Pulciņi šobrīd nav pieejami
+                                            {/if}
+                                        </p>
+                                    </div>
                                 {/each}
                             </div>
                         </Form.Field>

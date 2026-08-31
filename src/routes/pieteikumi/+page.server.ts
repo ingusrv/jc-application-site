@@ -8,7 +8,7 @@ import { requireRole } from '$lib/server/auth';
 
 
 export const load: PageServerLoad = async ({ fetch, request }) => {
-    await requireRole(fetch, 'authenticated');
+    await requireRole(fetch, 'admin');
 
     try {
         const db = await getDb();
@@ -19,11 +19,13 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
 
         return {
             applications: applications,
+            errorMessage: null,
         };
     } catch (err: any) {
-        console.error("Database error while fetching recent applications:", err);
+        console.error("Database error while fetching applications:", err);
         return {
             applications: [],
+            errorMessage: "Pieteikumi nav pieejami sistēmas kļūdas dēļ",
         };
     }
 }

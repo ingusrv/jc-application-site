@@ -6,7 +6,7 @@ import { desc, eq } from 'drizzle-orm';
 import { requireRole } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ fetch }) => {
-    await requireRole(fetch, 'authenticated');
+    await requireRole(fetch, 'admin');
 
     try {
         const db = await getDb();
@@ -16,11 +16,13 @@ export const load: PageServerLoad = async ({ fetch }) => {
 
         return {
             clubs: clubs,
+            errorMessage: null,
         };
     } catch (err: any) {
         console.error("Database error while fetching clubs:", err);
         return {
             clubs: [],
+            errorMessage: "Pulciņi nav pieejami sistēmas kļūdas dēļ",
         };
     }
 }
@@ -34,8 +36,6 @@ export const actions: Actions = {
         const maxParticipants = parseInt(formData.get('maxParticipants') as string, 10);
         const schedule = formData.get('schedule') as string;
         const description = formData.get('description') as string;
-
-        console.log("Creating club with data:", { name, minGrade, maxGrade, maxParticipants, schedule, description });
 
         try {
             const db = await getDb();
@@ -51,7 +51,7 @@ export const actions: Actions = {
             return { success: true };
         } catch (err: any) {
             console.error("Database error while adding club:", err);
-            return { success: false, error: err?.message || "Datubāze nav pieejama" };
+            return { success: false, error: "Sistēmas kļūda" };
         }
     },
     updateClub: async ({ request }) => {
@@ -80,7 +80,7 @@ export const actions: Actions = {
             return { success: true };
         } catch (err: any) {
             console.error("Database error while editing club:", err);
-            return { success: false, error: err?.message || "Datubāze nav pieejama" };
+            return { success: false, error: "Sistēmas kļūda" };
         }
     },
     deleteClub: async ({ request }) => {
@@ -95,7 +95,7 @@ export const actions: Actions = {
             return { success: true };
         } catch (err: any) {
             console.error("Database error while deleting club:", err);
-            return { success: false, error: err?.message || "Datubāze nav pieejama" };
+            return { success: false, error: "Sistēmas kļūda" };
         }
     },
 };

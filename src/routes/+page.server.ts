@@ -2,7 +2,7 @@ import { getDb } from "$lib/server/db";
 import { applicationsTable, clubsTable, type Club } from "$lib/server/db/schema";
 import type { PageServerLoad, Actions } from "./$types";
 import { fail, message, superValidate } from "sveltekit-superforms";
-import { applicationFormSchema } from "./schema";
+import { applicationFormSchema } from "./applicationFormSchema";
 import { zod4 } from "sveltekit-superforms/adapters";
 import { count, asc } from "drizzle-orm";
 
@@ -10,6 +10,7 @@ export type ClubWithApplicationCount = Club & { applicationCount: number };
 
 export const load: PageServerLoad = async () => {
     let clubs: ClubWithApplicationCount[] = [];
+    let errorMessage: string | null = null;
 
     try {
         const db = await getDb();
@@ -35,12 +36,14 @@ export const load: PageServerLoad = async () => {
             applicationCount: countMap.get(club.id) || 0,
         }));
     } catch (err: any) {
-        console.error("Database error while fetching clubs:", err);
+        console.error("Database error while fetching data:", err);
+        errorMessage = "Pulciņi nav pieejami sistēmas kļūdas dēļ";
     }
 
     return {
         form: await superValidate(zod4(applicationFormSchema)),
         clubs: clubs,
+        errorMessage: errorMessage,
     }
 };
 
