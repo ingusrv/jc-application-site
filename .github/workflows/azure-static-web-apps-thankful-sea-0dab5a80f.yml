@@ -46,16 +46,10 @@ jobs:
           # svelte-adapter-azure-swa.
           app_location: "build/static"
           api_location: "build/server"
-
-          # Tell SWA not to run Oryx against our already-built output.
-          skip_app_build: true
-          skip_api_build: true
-
-          # Required to be empty when skip_app_build is true.
           output_location: ""
+          routes_location: "/"
 
-          # Keep SWA config handling explicit.
-          config_file_location: "build/static"
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
