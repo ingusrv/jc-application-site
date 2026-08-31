@@ -3,8 +3,8 @@
   "configurations": {
     "jc-application-form": {
       "appLocation": "./",
-      "outputLocation": "build/static",
       "apiLocation": "build/server",
+      "outputLocation": "build/static",
       "appDevserverUrl": "http://localhost:5173",
       "host": "localhost",
       "port": 4280

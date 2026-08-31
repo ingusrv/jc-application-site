@@ -119,10 +119,10 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
-                    <Label for="minClass">Minimālā klase</Label>
+                    <Label for="minGrade">Minimālā klase</Label>
                     <Input
-                        id="minClass"
-                        name="minClass"
+                        id="minGrade"
+                        name="minGrade"
                         type="number"
                         placeholder="1"
                         value={editingClub?.minGrade ?? ""}
@@ -130,10 +130,10 @@
                     />
                 </div>
                 <div class="space-y-2">
-                    <Label for="maxClass">Maksimālā klase</Label>
+                    <Label for="maxGrade">Maksimālā klase</Label>
                     <Input
-                        id="maxClass"
-                        name="maxClass"
+                        id="maxGrade"
+                        name="maxGrade"
                         type="number"
                         placeholder="12"
                         value={editingClub?.maxGrade ?? ""}

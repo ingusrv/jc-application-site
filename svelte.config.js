@@ -5,13 +5,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: azure({
-			allowReservedSwaRoutes: true,
-			esbuildOptions: {
-				format: 'esm',
-				target: 'node20'
-			}
-		}),
+		adapter: azure(),
 		alias: {
 			$lib: './src/lib',
 			'$lib/*': './src/lib/*'
