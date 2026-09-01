@@ -1,3 +1,5 @@
-import { PUBLIC_SWA_AUTH } from "$env/static/public";
+import { env } from "$env/dynamic/public";
 
-export const authRedirectUri = PUBLIC_SWA_AUTH === "true" ? "/.auth/login/aad?post_login_redirect_uri=/pieteikumi" : "/pieteikumi";
+export const authRedirectUrl = env.PUBLIC_ENABLE_AUTH === "true"
+    ? "/.auth/login/aad?post_login_redirect_uri=/pieteikumi"
+    : "/pieteikumi";

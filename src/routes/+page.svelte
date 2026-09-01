@@ -33,7 +33,7 @@
     } from "@lucide/svelte";
     import { untrack } from "svelte";
     import type { ClubWithApplicationCount } from "./+page.server";
-    import { authRedirectUri } from "$lib/authUri";
+    import { authRedirectUrl } from "$lib/authUri";
 
     let {
         data,
@@ -825,7 +825,7 @@
             <Copyright class="size-4 inline-block mr-2" />
             {new Date().getFullYear()} - Siguldas novada Jaunrades centrs
         </span>
-        <Button variant="link" href={authRedirectUri}>
+        <Button variant="link" href={authRedirectUrl}>
             Pieslēgšanās darbiniekiem
         </Button>
     </footer>

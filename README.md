@@ -29,8 +29,16 @@ npm run docker:all   # Run SWA emulator + database
 
 ## Deployment
 
-Deploy to Azure Static Web Apps via GitHub Actions. Configure:
-- `app_location: "/"`
-- `api_location: "build/server"`
-- `output_location: "build/static"`
-- Set `DATABASE_URL` in Azure Portal application settings
+Deploy this app as a Node 24 LTS Azure App Service app.
+
+Required Azure configuration:
+- Runtime stack: `Node 24 LTS`
+- Startup command: `npm start`
+- Set `DATABASE_URL` in App Service configuration
+- Enable App Service built-in authentication (Microsoft Entra ID) and set the app to require authentication for admin routes if needed
+- Set `PUBLIC_ENABLE_AUTH=true` when the built-in auth is enabled
+
+Example App Service startup command:
+```bash
+npm start
+```

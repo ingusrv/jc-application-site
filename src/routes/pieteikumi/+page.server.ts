@@ -3,7 +3,6 @@ import { getDb } from '$lib/server/db';
 import { applicationsTable, type Application } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 import { desc } from 'drizzle-orm';
-import type { ClientPrincipal } from 'svelte-adapter-azure-swa';
 import { requireRole } from '$lib/server/auth';
 
 

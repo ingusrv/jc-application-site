@@ -1,7 +1,6 @@
 <script lang="ts">
     import * as Table from "$lib/components/ui/table/index";
     import * as Dialog from "$lib/components/ui/dialog/index";
-    import type { ClientPrincipal } from "svelte-adapter-azure-swa";
     import { type Club } from "$lib/server/db/schema";
     import { Button, buttonVariants } from "$lib/components/ui/button/index";
     import { Input } from "$lib/components/ui/input/index";

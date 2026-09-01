@@ -1,4 +1,4 @@
-import { PUBLIC_SWA_AUTH } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { error } from '@sveltejs/kit';
 
 export type ClientPrincipal = {
@@ -8,11 +8,15 @@ export type ClientPrincipal = {
     identityProvider?: string;
 };
 
+function isAppServiceAuthEnabled() {
+    return env.PUBLIC_ENABLE_AUTH === 'true';
+}
+
 export async function requireRole(
     fetch: typeof globalThis.fetch,
     role: string
 ) {
-    if (PUBLIC_SWA_AUTH === 'false') {
+    if (!isAppServiceAuthEnabled()) {
         return;
     }
 
@@ -28,10 +32,10 @@ export async function requireRole(
         throw error(401, 'Not authenticated');
     }
 
-    const { clientPrincipal }: { clientPrincipal: ClientPrincipal } =
-        JSON.parse(text);
+    const payload = JSON.parse(text) as { clientPrincipal?: ClientPrincipal };
+    const clientPrincipal = payload.clientPrincipal;
 
-    if (!clientPrincipal.userRoles?.includes(role)) {
+    if (!clientPrincipal?.userRoles?.includes(role)) {
         throw error(403, 'Not authorized');
     }
 
