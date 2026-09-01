@@ -2,11 +2,13 @@ import { drizzle, type NodeMsSqlDatabase } from 'drizzle-orm/node-mssql';
 import sql from 'mssql';
 import * as schema from './schema';
 import * as dotenv from 'dotenv';
+import { runMigrations } from './migrate';
 
 dotenv.config();
 
 let dbInstance: NodeMsSqlDatabase<typeof schema> | null = null;
 let connectionPool: sql.ConnectionPool | null = null;
+let migrationsRan = false;
 
 export async function getDbPool(): Promise<sql.ConnectionPool> {
 	if (connectionPool && connectionPool.connected) {
@@ -30,6 +32,18 @@ export async function getDb(): Promise<NodeMsSqlDatabase<typeof schema>> {
 
 	const pool = await getDbPool();
 	dbInstance = drizzle({ client: pool, schema });
+
+	// Run migrations on first database initialization
+	if (!migrationsRan) {
+		try {
+			await runMigrations(dbInstance);
+			migrationsRan = true;
+		} catch (error) {
+			console.error('Failed to run migrations during database initialization:', error);
+			throw error;
+		}
+	}
+
 	return dbInstance;
 }
 
