@@ -39,6 +39,7 @@ jobs:
           name: node-app
           path: |
             build
+            drizzle
             package.json
             package-lock.json
             node_modules
