@@ -62,8 +62,9 @@
 
     const { form: formData, enhance, delayed, message, allErrors } = form;
 
-    let processingAgreement = $state(false);
-    let rulesAgreement = $state(false);
+    let dataProcessingAgreement = $state(false);
+    let photographyAgreement = $state(false);
+    let internalRulesAgreement = $state(false);
     let selectedClubId = $state<number>(0);
     $effect(() => {
         $formData.clubId = selectedClubId;
@@ -77,12 +78,18 @@
 <main class="bg-background">
     <div class="mx-auto max-w-3xl space-y-8">
         <!-- Header / Hero -->
-        <header class="text-center space-y-3 pt-8">
+        <header class="text-center space-y-4 pt-8">
+            <img
+                src="main_logo.jpeg"
+                alt="Jaunrades centra logo"
+                class="mx-auto h-20 w-auto"
+            />
             <h1
                 id="form-title"
-                class="text-3xl font-extrabold tracking-tight sm:text-4xl"
+                class="text-3xl font-bold tracking-tight sm:text-4xl"
             >
-                Dalībnieka pieteikuma anketa
+                Dalībnieka pieteikuma anketa 2026./2027.mācību gada interešu
+                izglītības programmām un pulciņiem
             </h1>
             <p
                 class="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto"
@@ -617,8 +624,19 @@
                                             </Card.Title>
 
                                             <Card.Description>
-                                                {club.minGrade}. - {club.maxGrade}.
-                                                klase
+                                                <div
+                                                    class="text-muted-foreground"
+                                                >
+                                                    {club.minGrade}. - {club.maxGrade}.
+                                                    klase
+                                                </div>
+                                                {#if club.schedule}
+                                                    <div
+                                                        class="text-sm font-semibold text-foreground mt-2"
+                                                    >
+                                                        {club.schedule}
+                                                    </div>
+                                                {/if}
                                             </Card.Description>
                                         </Card.Header>
 
@@ -746,43 +764,77 @@
                         aria-labelledby="section-agreements"
                         class="space-y-4"
                     >
-                        <div class="space-y-3 bg-muted/20 px-4">
-                            <div class="flex items-start gap-3">
+                        <div class="space-y-3 bg-muted/20 px-4 py-4">
+                            <div class="flex flex-row items-start gap-3">
                                 <Checkbox
-                                    id="processing-agreement"
-                                    bind:checked={processingAgreement}
+                                    id="data-processing-agreement"
+                                    bind:checked={dataProcessingAgreement}
                                     required
                                     class="mt-1 border-black! dark:border-white!"
                                 />
                                 <Label
-                                    for="processing-agreement"
-                                    class="text-xs sm:text-sm font-normal text-foreground leading-relaxed cursor-pointer"
+                                    for="data-processing-agreement"
+                                    class="inline text-xs sm:text-sm font-normal text-foreground leading-relaxed cursor-pointer"
                                 >
-                                    Piekrītu, ka mani un dalībnieka norādītie
-                                    personas dati tiek apstrādāti saskaņā ar
-                                    piemērojamiem normatīvajiem aktiem nodarbību
-                                    organizēšanas un saziņas nolūkos. <span
-                                        class="text-destructive">*</span
-                                    >
+                                    Esmu informēts(-a) par manas
+                                    meitas/dēla/aizbilstamā un manu personas
+                                    datu apstrādi - saskaņā ar iesnieguma 1.
+                                    pielikumu - <a
+                                        href="https://docs.google.com/document/d/e/2PACX-1vTiNdiq07HH5tB0PrMySPGMaocJWw168LobbxoeLoN_A_XprqNY_CzJh7ehdqb3_2DP_3nsqOpp1Y3y/pub"
+                                        class="text-primary hover:underline"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >skatīt dokumentu</a
+                                    > <span class="text-destructive">*</span>
                                 </Label>
                             </div>
 
                             <div class="flex items-start gap-3">
                                 <Checkbox
-                                    id="rules-agreement"
-                                    bind:checked={rulesAgreement}
+                                    id="photography-agreement"
+                                    bind:checked={photographyAgreement}
                                     required
                                     class="mt-1 border-black! dark:border-white!"
                                 />
                                 <Label
-                                    for="rules-agreement"
-                                    class="text-xs sm:text-sm font-normal text-foreground leading-relaxed cursor-pointer"
+                                    for="photography-agreement"
+                                    class="inline text-xs sm:text-sm font-normal text-foreground leading-relaxed cursor-pointer"
                                 >
-                                    Esmu iepazinies(-usies) ar nodarbību
-                                    iekšējās kārtības un drošības noteikumiem un
-                                    apņemos tos ievērot. <span
-                                        class="text-destructive">*</span
-                                    >
+                                    Esmu informēts(-a) par manas
+                                    meitas/dēla/aizbilstamā un manu personas
+                                    datu apstrādi saistībā ar
+                                    meitas/dēla/aizbilstamā un manu
+                                    fotografēšanu un filmēšanu - saskaņā ar
+                                    iesnieguma 2. pielikumu - <a
+                                        href="https://docs.google.com/document/d/e/2PACX-1vSOYIfLlZj3gML_kdK9GSseB33FYlVcf4ca2JBdlRHlskOc4XvALCpeOg8Wv_9M5tqe2X1GPJkyAAlE/pub"
+                                        class="text-primary hover:underline"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >skatīt dokumentu</a
+                                    > <span class="text-destructive">*</span>
+                                </Label>
+                            </div>
+
+                            <div class="flex flex-row items-start gap-3">
+                                <Checkbox
+                                    id="internal-rules-agreement"
+                                    bind:checked={internalRulesAgreement}
+                                    required
+                                    class="mt-1 border-black! dark:border-white!"
+                                />
+                                <Label
+                                    for="internal-rules-agreement"
+                                    class="inline text-xs sm:text-sm font-normal text-foreground leading-relaxed cursor-pointer"
+                                >
+                                    Esmu informēts(-a) par Siguldas novada
+                                    Jaunrades centra iekšējās kārtības
+                                    noteikumiem - <a
+                                        href="https://docs.google.com/document/d/e/2PACX-1vS9L3BFqLqrE6FicYVmvFQHMcdT8-0pr6OshWBcShjwea8HC0UgcQvvbZLCQEDnug/pub"
+                                        class="text-primary hover:underline"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >skatīt dokumentu</a
+                                    > <span class="text-destructive">*</span>
                                 </Label>
                             </div>
                         </div>
@@ -801,8 +853,9 @@
                     <Button
                         type="submit"
                         disabled={$delayed ||
-                            !processingAgreement ||
-                            !rulesAgreement}
+                            !dataProcessingAgreement ||
+                            !photographyAgreement ||
+                            !internalRulesAgreement}
                         class="w-full sm:w-auto min-w-44 gap-2 font-medium"
                     >
                         {#if $delayed}
