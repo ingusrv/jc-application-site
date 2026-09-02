@@ -871,13 +871,24 @@
         </Card.Root>
     </div>
 
-    <footer class="mt-10 border-t-2 py-4 flex flex-col items-center">
-        <span
-            class="flex items-center justify-center text-sm text-muted-foreground"
+    <footer class="mt-10 border-t-2 py-4 flex flex-col items-center gap-3">
+        <div
+            class="flex items-center justify-center gap-3 text-sm text-muted-foreground"
         >
-            <Copyright class="size-4 inline-block mr-2" />
-            {new Date().getFullYear()} - Siguldas novada Jaunrades centrs
-        </span>
+            <span class="flex items-center">
+                <Copyright class="size-4 inline-block mr-2" />
+                {new Date().getFullYear()} - Siguldas novada Jaunrades centrs
+            </span>
+            <span>|</span>
+            <a
+                href="https://sigulda.lv/privatums/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline"
+            >
+                Privātuma politika
+            </a>
+        </div>
         <Button variant="link" href={authRedirectUrl}>
             Pieslēgšanās darbiniekiem
         </Button>
