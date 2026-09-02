@@ -56,6 +56,13 @@
                     block: "start",
                 });
                 document.getElementById("form-title")?.focus();
+                // Reset form state after successful submission
+                if (result.status === 200) {
+                    selectedClubId = 0;
+                    dataProcessingAgreement = false;
+                    photographyAgreement = false;
+                    internalRulesAgreement = false;
+                }
             },
         },
     );

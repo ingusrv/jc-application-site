@@ -4,7 +4,7 @@ import type { PageServerLoad, Actions } from "./$types";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { applicationFormSchema } from "./applicationFormSchema";
 import { zod4 } from "sveltekit-superforms/adapters";
-import { count, asc } from "drizzle-orm";
+import { count, asc, eq } from "drizzle-orm";
 
 export type ClubWithApplicationCount = Club & { applicationCount: number };
 
@@ -57,6 +57,22 @@ export const actions: Actions = {
 
         try {
             const db = await getDb();
+
+            // Count existing applications with the same person code
+            const existingAppsResult = await db
+                .select({ count: count(applicationsTable.id) })
+                .from(applicationsTable)
+                .where(eq(applicationsTable.personCode, form.data.personCode));
+
+            const existingAppCount = existingAppsResult[0]?.count || 0;
+
+            // Calculate priority: after 3rd application, decrease by 1 for each additional
+            // 4th app gets -1, 5th gets -2, etc.
+            let priority = 0;
+            if (existingAppCount >= 3) {
+                priority = -(existingAppCount - 3);
+            }
+
             await db.insert(applicationsTable).values({
                 firstName: form.data.firstName,
                 lastName: form.data.lastName,
@@ -76,6 +92,7 @@ export const actions: Actions = {
                 secondaryGuardianPhone: form.data.secondaryGuardianPhone || null,
                 clubId: form.data.clubId,
                 status: "apstrādē",
+                priority: priority,
             });
 
             return message(form, "Pieteikums ir veiksmīgi nosūtīts!");
