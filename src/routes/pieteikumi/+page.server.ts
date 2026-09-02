@@ -5,7 +5,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { desc, eq } from 'drizzle-orm';
 import { requireRole } from '$lib/server/auth';
 
-export type ApplicationWithClub = Application & { clubName: string };
+export type ApplicationWithClub = Application & { clubName: string; clubSchedule: string };
 
 export const load: PageServerLoad = async ({ fetch, request }) => {
     await requireRole(fetch, 'admin');
@@ -36,6 +36,7 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
                 priority: applicationsTable.priority,
                 createdAt: applicationsTable.createdAt,
                 clubName: clubsTable.name,
+                clubSchedule: clubsTable.schedule,
             })
             .from(applicationsTable)
             .leftJoin(clubsTable, eq(applicationsTable.clubId, clubsTable.id))

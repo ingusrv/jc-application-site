@@ -44,6 +44,7 @@
             <Table.Head>Vārds</Table.Head>
             <Table.Head>Uzvārds</Table.Head>
             <Table.Head>Pulciņš</Table.Head>
+            <Table.Head>Nodarbību laiks</Table.Head>
             <Table.Head>Personas kods</Table.Head>
             <Table.Head>Adrese</Table.Head>
             <Table.Head>Izglītības iestāde</Table.Head>
@@ -65,6 +66,7 @@
                     {application.lastName}
                 </Table.Cell>
                 <Table.Cell>{application.clubName}</Table.Cell>
+                <Table.Cell>{application.clubSchedule}</Table.Cell>
                 <Table.Cell>{application.personCode}</Table.Cell>
                 <Table.Cell>{application.address}</Table.Cell>
                 <Table.Cell>{application.educationalInstitution}</Table.Cell>
@@ -114,87 +116,167 @@
         {#if viewingApplication}
             <div class="space-y-6">
                 <div>
-                    <h3 class="font-semibold text-lg mb-4">Personīgā informācija</h3>
+                    <h3 class="font-semibold text-lg mb-4">
+                        Personīgā informācija
+                    </h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Vārds</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Vārds
+                            </p>
                             <p>{viewingApplication.firstName}</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Uzvārds</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Uzvārds
+                            </p>
                             <p>{viewingApplication.lastName}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Personas kods</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Personas kods
+                            </p>
                             <p>{viewingApplication.personCode}</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Pulciņš</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Pulciņš
+                            </p>
                             <p>{viewingApplication.clubName}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">E-pasts</p>
-                            <p class={isNullOrEmpty(viewingApplication.email) ? "text-red-500" : ""}>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                E-pasts
+                            </p>
+                            <p
+                                class={isNullOrEmpty(viewingApplication.email)
+                                    ? "text-red-500"
+                                    : ""}
+                            >
                                 {displayValue(viewingApplication.email)}
                             </p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Tālrunis</p>
-                            <p class={isNullOrEmpty(viewingApplication.phone) ? "text-red-500" : ""}>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Tālrunis
+                            </p>
+                            <p
+                                class={isNullOrEmpty(viewingApplication.phone)
+                                    ? "text-red-500"
+                                    : ""}
+                            >
                                 {displayValue(viewingApplication.phone)}
                             </p>
                         </div>
                     </div>
 
                     <div class="mt-4">
-                        <p class="font-semibold text-sm text-muted-foreground">Adrese</p>
+                        <p class="font-semibold text-sm text-muted-foreground">
+                            Adrese
+                        </p>
                         <p>{viewingApplication.address}</p>
                     </div>
                 </div>
 
                 <div class="border-t pt-4">
-                    <h3 class="font-semibold text-lg mb-4">Izglītības informācija</h3>
+                    <h3 class="font-semibold text-lg mb-4">
+                        Izglītības informācija
+                    </h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Izglītības iestāde</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Izglītības iestāde
+                            </p>
                             <p>{viewingApplication.educationalInstitution}</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Klase</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Klase
+                            </p>
                             <p>{viewingApplication.grade}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="border-t pt-4">
-                    <h3 class="font-semibold text-lg mb-4">Pirmā vecāka dati</h3>
+                    <h3 class="font-semibold text-lg mb-4">
+                        Pirmā vecāka dati
+                    </h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Vārds</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Vārds
+                            </p>
                             <p>{viewingApplication.primaryGuardianFirstName}</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Uzvārds</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Uzvārds
+                            </p>
                             <p>{viewingApplication.primaryGuardianLastName}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">E-pasts</p>
-                            <p class={isNullOrEmpty(viewingApplication.primaryGuardianEmail) ? "text-red-500" : ""}>
-                                {displayValue(viewingApplication.primaryGuardianEmail)}
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                E-pasts
+                            </p>
+                            <p
+                                class={isNullOrEmpty(
+                                    viewingApplication.primaryGuardianEmail,
+                                )
+                                    ? "text-red-500"
+                                    : ""}
+                            >
+                                {displayValue(
+                                    viewingApplication.primaryGuardianEmail,
+                                )}
                             </p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Tālrunis</p>
-                            <p class={isNullOrEmpty(viewingApplication.primaryGuardianPhone) ? "text-red-500" : ""}>
-                                {displayValue(viewingApplication.primaryGuardianPhone)}
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Tālrunis
+                            </p>
+                            <p
+                                class={isNullOrEmpty(
+                                    viewingApplication.primaryGuardianPhone,
+                                )
+                                    ? "text-red-500"
+                                    : ""}
+                            >
+                                {displayValue(
+                                    viewingApplication.primaryGuardianPhone,
+                                )}
                             </p>
                         </div>
                     </div>
@@ -204,54 +286,124 @@
                     <h3 class="font-semibold text-lg mb-4">Otrā vecāka dati</h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Vārds</p>
-                            <p class={isNullOrEmpty(viewingApplication.secondaryGuardianFirstName) ? "text-red-500" : ""}>
-                                {displayValue(viewingApplication.secondaryGuardianFirstName)}
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Vārds
+                            </p>
+                            <p
+                                class={isNullOrEmpty(
+                                    viewingApplication.secondaryGuardianFirstName,
+                                )
+                                    ? "text-red-500"
+                                    : ""}
+                            >
+                                {displayValue(
+                                    viewingApplication.secondaryGuardianFirstName,
+                                )}
                             </p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Uzvārds</p>
-                            <p class={isNullOrEmpty(viewingApplication.secondaryGuardianLastName) ? "text-red-500" : ""}>
-                                {displayValue(viewingApplication.secondaryGuardianLastName)}
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Uzvārds
+                            </p>
+                            <p
+                                class={isNullOrEmpty(
+                                    viewingApplication.secondaryGuardianLastName,
+                                )
+                                    ? "text-red-500"
+                                    : ""}
+                            >
+                                {displayValue(
+                                    viewingApplication.secondaryGuardianLastName,
+                                )}
                             </p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">E-pasts</p>
-                            <p class={isNullOrEmpty(viewingApplication.secondaryGuardianEmail) ? "text-red-500" : ""}>
-                                {displayValue(viewingApplication.secondaryGuardianEmail)}
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                E-pasts
+                            </p>
+                            <p
+                                class={isNullOrEmpty(
+                                    viewingApplication.secondaryGuardianEmail,
+                                )
+                                    ? "text-red-500"
+                                    : ""}
+                            >
+                                {displayValue(
+                                    viewingApplication.secondaryGuardianEmail,
+                                )}
                             </p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Tālrunis</p>
-                            <p class={isNullOrEmpty(viewingApplication.secondaryGuardianPhone) ? "text-red-500" : ""}>
-                                {displayValue(viewingApplication.secondaryGuardianPhone)}
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Tālrunis
+                            </p>
+                            <p
+                                class={isNullOrEmpty(
+                                    viewingApplication.secondaryGuardianPhone,
+                                )
+                                    ? "text-red-500"
+                                    : ""}
+                            >
+                                {displayValue(
+                                    viewingApplication.secondaryGuardianPhone,
+                                )}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="border-t pt-4">
-                    <h3 class="font-semibold text-lg mb-4">Papildu informācija</h3>
+                    <h3 class="font-semibold text-lg mb-4">
+                        Papildu informācija
+                    </h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">ID</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                ID
+                            </p>
                             <p>{viewingApplication.id}</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Statuss</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Statuss
+                            </p>
                             <p>{viewingApplication.status}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Prioritāte</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Prioritāte
+                            </p>
                             <p>{viewingApplication.priority}</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-sm text-muted-foreground">Pieteikuma datums</p>
-                            <p>{new Date(viewingApplication.createdAt).toLocaleString('lv-LV')}</p>
+                            <p
+                                class="font-semibold text-sm text-muted-foreground"
+                            >
+                                Pieteikuma datums
+                            </p>
+                            <p>
+                                {new Date(
+                                    viewingApplication.createdAt,
+                                ).toLocaleString("lv-LV")}
+                            </p>
                         </div>
                     </div>
                 </div>

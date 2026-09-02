@@ -569,8 +569,14 @@
 
                             <p class="text-sm text-muted-foreground">
                                 Izvēlieties vienu pulciņu, kuram vēlaties
-                                pieteikties. Pieteikumi tiek izskatīti pirms
+                                pieteikties. Ja vēlaties pieteikties uz
+                                vairākiem pulciņiem, tad jāaizpilda anketu
+                                vēlreiz. Pieteikumi tiek izskatīti pirms
                                 dalībnieku apstiprināšanas.
+                                <span class="underline">
+                                    Dalība pulciņos sāksies pēc epasta
+                                    saņemšanas!
+                                </span>
                             </p>
 
                             <Form.FieldErrors />
