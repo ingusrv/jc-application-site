@@ -62,6 +62,7 @@
                 clubName: string;
                 clubSchedule: string;
                 clubMaxParticipants: number;
+                clubDeleted: boolean;
                 applications: ApplicationWithClub[];
             }
         >();
@@ -79,13 +80,18 @@
                 clubName: application.clubName,
                 clubSchedule: application.clubSchedule,
                 clubMaxParticipants: application.clubMaxParticipants,
+                clubDeleted: application.clubDeleted,
                 applications: [application],
             });
         }
 
-        return [...groups.values()].sort((a, b) =>
-            a.clubName.localeCompare(b.clubName),
-        );
+        return [...groups.values()].sort((a, b) => {
+            if (a.clubDeleted !== b.clubDeleted) {
+                return Number(a.clubDeleted) - Number(b.clubDeleted);
+            }
+
+            return a.clubName.localeCompare(b.clubName);
+        });
     });
 
     const duplicateApplicationKeys = $derived.by(() => {
@@ -191,7 +197,7 @@
         </div>
         <div class="rounded-xl border bg-card p-4 shadow-sm">
             <p class="text-sm text-muted-foreground">Kopā pulciņi</p>
-            <p class="text-3xl font-bold">{clubGroups.length}</p>
+            <p class="text-3xl font-bold">{data.clubs.length}</p>
         </div>
     </div>
 
@@ -223,6 +229,11 @@
                         </button>
 
                         <div class="flex flex-wrap items-baseline gap-3">
+                            {#if clubGroup.clubDeleted}
+                                <span class="text-2xl font-bold text-red-600">
+                                    IZDZĒSTS
+                                </span>
+                            {/if}
                             <h2 class="text-2xl font-bold tracking-tight">
                                 {clubGroup.clubName}
                             </h2>

@@ -8,6 +8,7 @@ export type ApplicationWithClub = Application & {
     clubName: string;
     clubSchedule: string;
     clubMaxParticipants: number;
+    clubDeleted: boolean;
 };
 
 export type ClubOption = {
@@ -47,20 +48,17 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
                 clubName: clubsTable.name,
                 clubSchedule: clubsTable.schedule,
                 clubMaxParticipants: clubsTable.maxParticipants,
+                clubDeleted: clubsTable.deleted,
             })
             .from(applicationsTable)
             .leftJoin(clubsTable, eq(applicationsTable.clubId, clubsTable.id))
-            .where(
-                and(
-                    eq(applicationsTable.deleted, false),
-                    eq(clubsTable.deleted, false),
-                ),
-            )
+            .where(eq(applicationsTable.deleted, false))
             .orderBy(
                 desc(applicationsTable.priority),
                 asc(applicationsTable.createdAt),
                 asc(applicationsTable.id),
             ) as ApplicationWithClub[];
+
         const clubs = await db
             .select({
                 id: clubsTable.id,
