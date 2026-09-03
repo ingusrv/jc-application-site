@@ -4,7 +4,7 @@ import type { PageServerLoad, Actions } from "./$types";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { applicationFormSchema } from "./applicationFormSchema";
 import { zod4 } from "sveltekit-superforms/adapters";
-import { count, asc, eq } from "drizzle-orm";
+import { and, count, asc, eq } from "drizzle-orm";
 
 export type ClubWithApplicationCount = Club & { applicationCount: number };
 
@@ -16,7 +16,14 @@ export const load: PageServerLoad = async () => {
         const db = await getDb();
         const clubsFromDb = await db
             .select()
-            .from(clubsTable).orderBy(asc(clubsTable.minGrade)) as Club[];
+            .from(clubsTable)
+            .where(
+                and(
+                    eq(clubsTable.deleted, false),
+                    eq(clubsTable.isOpen, true),
+                ),
+            )
+            .orderBy(asc(clubsTable.minGrade)) as Club[];
 
         // Fetch application count for each club
         const applicationCounts = await db
@@ -25,6 +32,7 @@ export const load: PageServerLoad = async () => {
                 count: count(applicationsTable.id),
             })
             .from(applicationsTable)
+            .where(eq(applicationsTable.deleted, false))
             .groupBy(applicationsTable.clubId);
 
         // Create a map for easy lookup
@@ -58,11 +66,53 @@ export const actions: Actions = {
         try {
             const db = await getDb();
 
+            const openClub = await db
+                .select({ id: clubsTable.id })
+                .from(clubsTable)
+                .where(
+                    and(
+                        eq(clubsTable.id, form.data.clubId),
+                        eq(clubsTable.deleted, false),
+                        eq(clubsTable.isOpen, true),
+                    ),
+                );
+
+            if (openClub.length === 0) {
+                return fail(400, {
+                    form,
+                    submissionError: "Izvēlētais pulciņš vairs nepieņem pieteikumus",
+                });
+            }
+
+            const personCode = form.data.personCode.trim();
+            const existingApplication = await db
+                .select({ id: applicationsTable.id })
+                .from(applicationsTable)
+                .where(
+                    and(
+                        eq(applicationsTable.personCode, personCode),
+                        eq(applicationsTable.clubId, form.data.clubId),
+                        eq(applicationsTable.deleted, false),
+                    ),
+                );
+
+            if (existingApplication.length > 0) {
+                return fail(400, {
+                    form,
+                    submissionError: "Šis dalībnieks jau ir pieteikts izvēlētajam pulciņam",
+                });
+            }
+
             // Count existing applications with the same person code
             const existingAppsResult = await db
                 .select({ count: count(applicationsTable.id) })
                 .from(applicationsTable)
-                .where(eq(applicationsTable.personCode, form.data.personCode));
+                .where(
+                    and(
+                        eq(applicationsTable.personCode, personCode),
+                        eq(applicationsTable.deleted, false),
+                    ),
+                );
 
             const existingAppCount = existingAppsResult[0]?.count || 0;
 
@@ -76,7 +126,7 @@ export const actions: Actions = {
             await db.insert(applicationsTable).values({
                 firstName: form.data.firstName,
                 lastName: form.data.lastName,
-                personCode: form.data.personCode,
+                personCode: personCode,
                 email: form.data.email || null,
                 phone: form.data.phone || null,
                 address: form.data.address,
@@ -98,11 +148,7 @@ export const actions: Actions = {
             return message(form, "Pieteikums ir veiksmīgi nosūtīts!");
         } catch (err: any) {
             console.error("Database error while submitting application:", err);
-            return message(
-                form,
-                `${err?.message || "Radās kļūda"}`,
-                { status: 500 }
-            );
+            return fail(500, { form, submissionError: "Radās kļūda" });
         }
     },
 };

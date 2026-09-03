@@ -3,7 +3,7 @@ import { z } from "zod";
 export const applicationFormSchema = z.object({
     firstName: z.string().min(1, { message: "Dalībnieka vārds ir obligāts" }).max(100, { message: "Dalībnieka vārds nevar pārsniegt 100 rakstzīmes" }),
     lastName: z.string().min(1, { message: "Dalībnieka uzvārds ir obligāts" }).max(100, { message: "Dalībnieka uzvārds nevar pārsniegt 100 rakstzīmes" }),
-    personCode: z.string().min(1, { message: "Dalībnieka personas kods ir obligāts" }).max(12, { message: "Dalībnieka personas kods nevar pārsniegt 12 rakstzīmes" }),
+    personCode: z.string().regex(/^\d{6}-\d{5}$/, { message: "Dalībnieka personas kodam jābūt formatā xxxxxx-xxxxx" }),
     address: z.string().min(1, { message: "Dalībnieka adrese ir obligāta" }).max(255, { message: "Dalībnieka adrese nevar pārsniegt 255 rakstzīmes" }),
     email: z.email({ message: "Nederīga dalībnieka e-pasta adrese" }).max(255).optional(),
     phone: z.string().max(20).optional(),

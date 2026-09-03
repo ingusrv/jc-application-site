@@ -1,8 +1,7 @@
-import { error, redirect } from '@sveltejs/kit';
 import { getDb } from '$lib/server/db';
 import { clubsTable, type Club } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
-import { desc, eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { requireRole } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ fetch }) => {
@@ -12,7 +11,9 @@ export const load: PageServerLoad = async ({ fetch }) => {
         const db = await getDb();
         const clubs = await db
             .select()
-            .from(clubsTable) as Club[];
+            .from(clubsTable)
+            .where(eq(clubsTable.deleted, false))
+            .orderBy(asc(clubsTable.name)) as Club[];
 
         return {
             clubs: clubs,
@@ -28,7 +29,9 @@ export const load: PageServerLoad = async ({ fetch }) => {
 }
 
 export const actions: Actions = {
-    createClub: async ({ request }) => {
+    createClub: async ({ request, fetch }) => {
+        await requireRole(fetch, 'admin');
+
         const formData = await request.formData();
         const name = formData.get('name') as string;
         const minGrade = parseInt(formData.get('minGrade') as string, 10);
@@ -36,6 +39,7 @@ export const actions: Actions = {
         const maxParticipants = parseInt(formData.get('maxParticipants') as string, 10);
         const schedule = formData.get('schedule') as string;
         const description = formData.get('description') as string;
+        const isOpen = formData.get('isOpen') === 'on';
 
         try {
             const db = await getDb();
@@ -46,6 +50,7 @@ export const actions: Actions = {
                 maxParticipants,
                 description,
                 schedule,
+                isOpen,
             });
 
             return { success: true };
@@ -54,7 +59,9 @@ export const actions: Actions = {
             return { success: false, error: "Sistēmas kļūda" };
         }
     },
-    updateClub: async ({ request }) => {
+    updateClub: async ({ request, fetch }) => {
+        await requireRole(fetch, 'admin');
+
         const formData = await request.formData();
         const id = parseInt(formData.get('id') as string, 10);
         const name = formData.get('name') as string;
@@ -63,6 +70,7 @@ export const actions: Actions = {
         const maxParticipants = parseInt(formData.get('maxParticipants') as string, 10);
         const schedule = formData.get('schedule') as string;
         const description = formData.get('description') as string;
+        const isOpen = formData.get('isOpen') === 'on';
 
         try {
             const db = await getDb();
@@ -74,6 +82,7 @@ export const actions: Actions = {
                     maxParticipants,
                     schedule,
                     description,
+                    isOpen,
                 })
                 .where(eq(clubsTable.id, id));
 
@@ -83,13 +92,16 @@ export const actions: Actions = {
             return { success: false, error: "Sistēmas kļūda" };
         }
     },
-    deleteClub: async ({ request }) => {
+    deleteClub: async ({ request, fetch }) => {
+        await requireRole(fetch, 'admin');
+
         const formData = await request.formData();
         const id = parseInt(formData.get('id') as string, 10);
 
         try {
             const db = await getDb();
-            await db.delete(clubsTable)
+            await db.update(clubsTable)
+                .set({ deleted: true })
                 .where(eq(clubsTable.id, id));
 
             return { success: true };

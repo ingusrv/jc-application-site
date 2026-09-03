@@ -7,7 +7,8 @@
     import { Label } from "$lib/components/ui/label/index";
     import { enhance } from "$app/forms";
     import { Textarea } from "$lib/components/ui/textarea/index";
-    import { X } from "@lucide/svelte";
+    import Checkbox from "$lib/components/ui/checkbox/checkbox.svelte";
+    import { X, Trash2 } from "@lucide/svelte";
 
     let { data }: { data: { clubs: Club[]; errorMessage: string | null } } =
         $props();
@@ -32,56 +33,96 @@
     <title>Pulciņi</title>
 </svelte:head>
 
-<Button variant="link" href="/pieteikumi">Skatīt pieteikumus</Button>
-<Button
-    variant="default"
-    onclick={() => {
-        editingClub = null;
-        dialogOpen = true;
-    }}
->
-    Pievienot jaunu pulciņu
-</Button>
+<div class="flex flex-col h-screen overflow-hidden">
+    <div>
+        <Button variant="link" href="/pieteikumi">Skatīt pieteikumus</Button>
+        <Button
+            variant="default"
+            onclick={() => {
+                editingClub = null;
+                dialogOpen = true;
+            }}
+        >
+            Pievienot jaunu pulciņu
+        </Button>
+    </div>
 
-<Table.Root>
-    <Table.Caption>Pulciņu tabula</Table.Caption>
-    <Table.Header>
-        <Table.Row>
-            <Table.Head>Nosaukums</Table.Head>
-            <Table.Head>Klase</Table.Head>
-            <Table.Head>Vietas</Table.Head>
-            <Table.Head>Nodarbību laiki</Table.Head>
-            <Table.Head>Apraksts</Table.Head>
-            <Table.Head>Darbības</Table.Head>
-        </Table.Row>
-    </Table.Header>
-    <Table.Body>
-        {#each data.clubs as club}
-            <Table.Row>
-                <Table.Cell>{club.name}</Table.Cell>
-                <Table.Cell>
-                    {club.minGrade}. - {club.maxGrade}. klase
-                </Table.Cell>
-                <Table.Cell>{club.maxParticipants}</Table.Cell>
-                <Table.Cell>{club.schedule}</Table.Cell>
-                <Table.Cell class="max-w-lg whitespace-normal"
-                    >{club.description}</Table.Cell
-                >
-                <Table.Cell>
-                    <Button
-                        variant="secondary"
-                        onclick={() => {
-                            editingClub = club;
-                            dialogOpen = true;
-                        }}
-                    >
-                        Rediģēt
-                    </Button>
-                </Table.Cell>
-            </Table.Row>
-        {/each}
-    </Table.Body>
-</Table.Root>
+    <div class="flex-1 min-h-0">
+        <Table.Root class="relative" containerClass="h-full">
+            <Table.Header class="sticky top-0 z-10 bg-background">
+                <Table.Row>
+                    <Table.Head>Nosaukums</Table.Head>
+                    <Table.Head>Klase</Table.Head>
+                    <Table.Head>Vietas</Table.Head>
+                    <Table.Head>Nodarbību laiki</Table.Head>
+                    <Table.Head>Apraksts</Table.Head>
+                    <Table.Head>Pieteikumi</Table.Head>
+                    <Table.Head>Darbības</Table.Head>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {#each data.clubs as club}
+                    <Table.Row>
+                        <Table.Cell>{club.name}</Table.Cell>
+                        <Table.Cell>
+                            {club.minGrade}. - {club.maxGrade}. klase
+                        </Table.Cell>
+                        <Table.Cell>{club.maxParticipants}</Table.Cell>
+                        <Table.Cell>{club.schedule}</Table.Cell>
+                        <Table.Cell class="max-w-lg whitespace-normal">
+                            {club.description}
+                        </Table.Cell>
+                        <Table.Cell>
+                            {club.isOpen ? "Atvērts" : "Slēgts"}
+                        </Table.Cell>
+                        <Table.Cell>
+                            <span class="flex flex-row gap-2">
+                                <Button
+                                    variant="secondary"
+                                    class="cursor-pointer"
+                                    onclick={() => {
+                                        editingClub = club;
+                                        dialogOpen = true;
+                                    }}
+                                >
+                                    Rediģēt
+                                </Button>
+                                <form
+                                    method="post"
+                                    action="?/deleteClub"
+                                    use:enhance
+                                    onsubmit={(event) => {
+                                        if (
+                                            !confirm(
+                                                "Vai tiešām dzēst šo pulciņu?",
+                                            )
+                                        ) {
+                                            event.preventDefault();
+                                        }
+                                    }}
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="id"
+                                        value={club.id}
+                                    />
+                                    <Button
+                                        variant="destructive"
+                                        class="cursor-pointer"
+                                        type="submit"
+                                    >
+                                        <Trash2 data-icon="inline-start" />
+                                        Dzēst
+                                    </Button>
+                                </form>
+                            </span>
+                        </Table.Cell>
+                    </Table.Row>
+                {/each}
+            </Table.Body>
+        </Table.Root>
+    </div>
+</div>
 
 {#if data.errorMessage}
     <div
@@ -98,12 +139,11 @@
 <Dialog.Root bind:open={dialogOpen}>
     <Dialog.Content>
         <Dialog.Header>
-            <Dialog.Title
-                >{#if editingClub}Rediģēt pulciņu{:else}Pievienot jaunu pulciņu{/if}</Dialog.Title
-            >
+            <Dialog.Title>
+                {#if editingClub}Rediģēt pulciņu{:else}Pievienot jaunu pulciņu{/if}
+            </Dialog.Title>
             <Dialog.Description>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
+                Veiciet izmaiņas pulciņa datos un saglabājiet tās.
             </Dialog.Description>
         </Dialog.Header>
         {#if formSubmissionError}
@@ -120,11 +160,9 @@
             }}
             class="space-y-4"
         >
-            {#if editingClub}<input
-                    type="hidden"
-                    name="id"
-                    value={editingClub.id}
-                />{/if}
+            {#if editingClub}
+                <input type="hidden" name="id" value={editingClub.id} />
+            {/if}
 
             <div class="space-y-2">
                 <Label for="name">Nosaukums</Label>
@@ -164,9 +202,9 @@
             </div>
 
             <div class="space-y-2">
-                <Label for="maxParticipants"
-                    >Maksimālais dalībnieku skaits</Label
-                >
+                <Label for="maxParticipants">
+                    Maksimālais dalībnieku skaits
+                </Label>
                 <Input
                     id="maxParticipants"
                     name="maxParticipants"
@@ -199,6 +237,14 @@
                     maxlength={1000}
                     class="flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
+            </div>
+            <div class="flex items-center gap-3">
+                <Checkbox
+                    id="isOpen"
+                    name="isOpen"
+                    checked={editingClub?.isOpen ?? false}
+                />
+                <Label for="isOpen">Atvērts pieteikumiem</Label>
             </div>
             <Button type="submit" class="ml-auto block">Saglabāt</Button>
         </form>

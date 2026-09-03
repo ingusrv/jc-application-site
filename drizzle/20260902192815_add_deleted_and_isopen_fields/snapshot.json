@@ -1,0 +1,447 @@
+{
+  "version": "2",
+  "dialect": "mssql",
+  "id": "b12b8ef6-0ccf-4999-a0a2-2e757fb86478",
+  "prevIds": [
+    "87ca58e2-f3c7-449d-a91b-c9e00e44e983"
+  ],
+  "ddl": [
+    {
+      "name": "applications",
+      "entityType": "tables",
+      "schema": "dbo"
+    },
+    {
+      "name": "clubs",
+      "entityType": "tables",
+      "schema": "dbo"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": {
+        "seed": 1,
+        "increment": 1
+      },
+      "name": "id",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "first_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "last_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(12)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "person_code",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(20)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "phone",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "address",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "educational_institution",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "grade",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "primary_guardian_first_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "primary_guardian_last_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "primary_guardian_email",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(20)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "primary_guardian_phone",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "secondary_guardian_first_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(100)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "secondary_guardian_last_name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "secondary_guardian_email",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(20)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "secondary_guardian_phone",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "club_id",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "nvarchar(50)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "status",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "priority",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "bit",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "deleted",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "datetime2",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "applications"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": {
+        "seed": 1,
+        "increment": 1
+      },
+      "name": "id",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "min_grade",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "max_grade",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "int",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "max_participants",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "nvarchar(255)",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "schedule",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "nvarchar(1000)",
+      "notNull": false,
+      "generated": null,
+      "identity": null,
+      "name": "description",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "bit",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "is_open",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "bit",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "deleted",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "type": "datetime2",
+      "notNull": true,
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "dbo",
+      "entityType": "columns",
+      "table": "clubs"
+    },
+    {
+      "columns": [
+        "club_id"
+      ],
+      "nameExplicit": false,
+      "schemaTo": "dbo",
+      "tableTo": "clubs",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "applications_club_id_clubs_id_fk",
+      "entityType": "fks",
+      "table": "applications",
+      "schema": "dbo"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "id"
+      ],
+      "name": "applications_pkey",
+      "table": "applications",
+      "schema": "dbo",
+      "entityType": "pks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "id"
+      ],
+      "name": "clubs_pkey",
+      "table": "clubs",
+      "schema": "dbo",
+      "entityType": "pks"
+    },
+    {
+      "column": "status",
+      "nameExplicit": false,
+      "default": "('apstrādē')",
+      "name": "applications_status_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "applications"
+    },
+    {
+      "column": "priority",
+      "nameExplicit": false,
+      "default": "((0))",
+      "name": "applications_priority_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "applications"
+    },
+    {
+      "column": "deleted",
+      "nameExplicit": false,
+      "default": "((0))",
+      "name": "applications_deleted_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "applications"
+    },
+    {
+      "column": "created_at",
+      "nameExplicit": false,
+      "default": "(CURRENT_TIMESTAMP)",
+      "name": "applications_created_at_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "applications"
+    },
+    {
+      "column": "is_open",
+      "nameExplicit": false,
+      "default": "((0))",
+      "name": "clubs_is_open_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "clubs"
+    },
+    {
+      "column": "deleted",
+      "nameExplicit": false,
+      "default": "((0))",
+      "name": "clubs_deleted_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "clubs"
+    },
+    {
+      "column": "created_at",
+      "nameExplicit": false,
+      "default": "(CURRENT_TIMESTAMP)",
+      "name": "clubs_created_at_default",
+      "entityType": "defaults",
+      "schema": "dbo",
+      "table": "clubs"
+    }
+  ],
+  "renames": []
+}

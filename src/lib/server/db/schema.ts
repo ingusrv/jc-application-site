@@ -1,4 +1,4 @@
-import { mssqlTable, int, nvarchar, datetime2 } from 'drizzle-orm/mssql-core';
+import { mssqlTable, int, nvarchar, datetime2, bit } from 'drizzle-orm/mssql-core';
 import { sql } from 'drizzle-orm';
 
 export const clubsTable = mssqlTable('clubs', {
@@ -9,6 +9,8 @@ export const clubsTable = mssqlTable('clubs', {
 	maxParticipants: int('max_participants').notNull(),
 	schedule: nvarchar('schedule', { length: 255 }).notNull(),
 	description: nvarchar('description', { length: 1000 }),
+	isOpen: bit('is_open').default(false).notNull(),
+	deleted: bit('deleted').default(false).notNull(),
 	createdAt: datetime2('created_at').default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 
@@ -35,6 +37,7 @@ export const applicationsTable = mssqlTable('applications', {
 	clubId: int('club_id').references(() => clubsTable.id).notNull(),
 	status: nvarchar('status', { length: 50 }).default('apstrādē').notNull(),
 	priority: int('priority').default(0).notNull(),
+	deleted: bit('deleted').default(false).notNull(),
 	createdAt: datetime2('created_at').default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
     import * as Form from "$lib/components/ui/form/index";
     import { Input } from "$lib/components/ui/input/index";
     import { Button, buttonVariants } from "$lib/components/ui/button/index";
@@ -8,15 +7,8 @@
     import * as Card from "$lib/components/ui/card/index";
     import * as Collapsible from "$lib/components/ui/collapsible/index";
     import { Separator } from "$lib/components/ui/separator/index";
-    import {
-        applicationFormSchema,
-        type ApplicationFormSchema,
-    } from "./applicationFormSchema";
-    import {
-        superForm,
-        type SuperValidated,
-        type Infer,
-    } from "sveltekit-superforms";
+    import { applicationFormSchema } from "./applicationFormSchema";
+    import { superForm, type SuperValidated } from "sveltekit-superforms";
     import { zod4Client } from "sveltekit-superforms/adapters";
     import {
         User,
@@ -35,6 +27,8 @@
     import type { ClubWithApplicationCount } from "./+page.server";
     import { authRedirectUrl } from "$lib/authUri";
 
+    let submissionError = $state<string | null>(null);
+
     let {
         data,
     }: {
@@ -51,6 +45,11 @@
             dataType: "json",
             validators: zod4Client(applicationFormSchema),
             onResult: ({ result }) => {
+                submissionError =
+                    result.type === "failure"
+                        ? ((result.data as { submissionError?: string } | null)
+                              ?.submissionError ?? null)
+                        : null;
                 document.getElementById("form-title")?.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
@@ -58,6 +57,7 @@
                 document.getElementById("form-title")?.focus();
                 // Reset form state after successful submission
                 if (result.status === 200) {
+                    submissionError = null;
                     selectedClubId = 0;
                     dataProcessingAgreement = false;
                     photographyAgreement = false;
@@ -119,6 +119,19 @@
                 <div class="text-sm">
                     <p class="font-semibold">Paziņojums</p>
                     <p class="mt-0.5">{$message}</p>
+                </div>
+            </div>
+        {/if}
+
+        {#if submissionError}
+            <div
+                class="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-destructive shadow-xs"
+                role="alert"
+            >
+                <CircleAlert class="mt-0.5 size-5 shrink-0" />
+                <div class="text-sm">
+                    <p class="font-semibold">Neizdevās nosūtīt pieteikumu</p>
+                    <p class="mt-0.5">{submissionError}</p>
                 </div>
             </div>
         {/if}
@@ -571,8 +584,10 @@
                                 Izvēlieties vienu pulciņu, kuram vēlaties
                                 pieteikties. Ja vēlaties pieteikties uz
                                 vairākiem pulciņiem, tad jāaizpilda anketu
-                                vēlreiz. Pieteikumi tiek izskatīti pirms
-                                dalībnieku apstiprināšanas.
+                                vēlreiz. Lūdzu pieteikties pulciņiem prioritārā
+                                secībā (pirmais pieteikums = pirmā prioritāte).
+                                Pieteikumi tiek izskatīti pirms dalībnieku
+                                apstiprināšanas.
                                 <span class="underline">
                                     Dalība pulciņos sāksies pēc epasta
                                     saņemšanas!
