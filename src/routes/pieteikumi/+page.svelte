@@ -15,6 +15,7 @@
         ChevronUp,
         Pencil,
         Eye,
+        List,
         Trash2,
         RefreshCw,
     } from "@lucide/svelte";
@@ -34,6 +35,8 @@
     let editingApplication = $state<ApplicationWithClub | null>(null);
     let editDialogOpen = $state(false);
     let formSubmissionError = $state("");
+    let otherClubsApplication = $state<ApplicationWithClub | null>(null);
+    let otherClubsDialogOpen = $state(false);
     let recalculationMessage = $state("");
     let expandedClubIds = $state<Record<number, boolean>>({});
     let selectedClubId = $state("");
@@ -53,6 +56,29 @@
                 "Kļūda saglabājot datus. Lūdzu, mēģiniet vēlreiz.";
         }
     }
+
+    function openOtherClubsDialog(application: ApplicationWithClub): void {
+        otherClubsApplication = application;
+        otherClubsDialogOpen = true;
+    }
+
+    const otherClubApplications = $derived.by(() => {
+        if (!otherClubsApplication) {
+            return [];
+        }
+
+        const personCode = otherClubsApplication.personCode.trim();
+        if (!personCode) {
+            return [];
+        }
+
+        return data.applications.filter(
+            (application) =>
+                application.id !== otherClubsApplication?.id &&
+                application.clubId !== otherClubsApplication?.clubId &&
+                application.personCode.trim() === personCode,
+        );
+    });
 
     const clubGroups = $derived.by(() => {
         const groups = new Map<
@@ -330,6 +356,19 @@
                                                 />
                                                 Rediģēt
                                             </Button>
+                                            <Button
+                                                variant="secondary"
+                                                class="cursor-pointer"
+                                                onclick={() =>
+                                                    openOtherClubsDialog(
+                                                        application,
+                                                    )}
+                                            >
+                                                <List
+                                                    data-icon="inline-start"
+                                                />
+                                                Citi pieteikumi
+                                            </Button>
                                             <form
                                                 method="post"
                                                 action="?/deleteApplication"
@@ -371,6 +410,56 @@
     {/if}
     <!-- </div> -->
 </div>
+
+<Dialog.Root bind:open={otherClubsDialogOpen}>
+    <Dialog.Content class="max-w-2xl">
+        <Dialog.Header>
+            <Dialog.Title>Citi pulciņi</Dialog.Title>
+            <Dialog.Description>
+                Pulciņi, kuros šī persona ir pieteikta.
+            </Dialog.Description>
+        </Dialog.Header>
+
+        {#if otherClubsApplication}
+            {#if otherClubApplications.length === 0}
+                <p class="text-muted-foreground">
+                    Šī persona nav pieteikta nevienā citā pulciņā.
+                </p>
+            {:else}
+                <div class="space-y-3">
+                    {#each otherClubApplications as application (application.id)}
+                        <div class="rounded-lg border p-3">
+                            <p class="font-semibold">{application.clubName}</p>
+                            <p class="text-sm text-muted-foreground">
+                                {application.clubSchedule}
+                            </p>
+                            <p class="mt-2 text-sm text-foreground">
+                                Iesniegts: {application.createdAt.toLocaleString(
+                                    "lv-LV",
+                                )}
+                            </p>
+                            <p class="mt-2 text-sm">
+                                Statuss: {application.status}, Prioritāte: {application.priority}
+                            </p>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        {/if}
+
+        <Dialog.Footer>
+            <Dialog.Close
+                type="button"
+                class={buttonVariants({ variant: "outline" })}
+                onclick={() => {
+                    otherClubsDialogOpen = false;
+                }}
+            >
+                Aizvērt
+            </Dialog.Close>
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
 
 {#if data.errorMessage}
     <div
