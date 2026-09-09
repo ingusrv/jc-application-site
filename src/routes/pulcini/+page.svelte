@@ -90,14 +90,13 @@
                                 <form
                                     method="post"
                                     action="?/deleteClub"
-                                    use:enhance
-                                    onsubmit={(event) => {
+                                    use:enhance={({ cancel }) => {
                                         if (
                                             !confirm(
                                                 "Vai tiešām dzēst šo pulciņu?",
                                             )
                                         ) {
-                                            event.preventDefault();
+                                            cancel();
                                         }
                                     }}
                                 >

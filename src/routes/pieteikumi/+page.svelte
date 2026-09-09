@@ -333,14 +333,13 @@
                                             <form
                                                 method="post"
                                                 action="?/deleteApplication"
-                                                use:enhance
-                                                onsubmit={(event) => {
+                                                use:enhance={({ cancel }) => {
                                                     if (
                                                         !confirm(
                                                             "Vai tiešām dzēst šo pieteikumu?",
                                                         )
                                                     ) {
-                                                        event.preventDefault();
+                                                        cancel();
                                                     }
                                                 }}
                                             >
