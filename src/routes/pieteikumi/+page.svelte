@@ -180,6 +180,17 @@
         );
     });
 
+    const uniqueApplicationsCount = $derived.by(() => {
+        const applicationKeys = new Set<string>();
+
+        for (const application of data.applications) {
+            const personCode = application.personCode.trim();
+            applicationKeys.add(personCode);
+        }
+
+        return applicationKeys.size;
+    });
+
     function isDuplicateApplication(application: ApplicationWithClub): boolean {
         const personCode = application.personCode.trim();
         return (
@@ -255,10 +266,14 @@
         {/if}
     </div>
 
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-2 max-w-xl">
+    <div class="grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
         <div class="rounded-xl border bg-card p-4 shadow-sm">
             <p class="text-sm text-muted-foreground">Kopā pieteikumi</p>
             <p class="text-3xl font-bold">{data.applications.length}</p>
+        </div>
+        <div class="rounded-xl border bg-card p-4 shadow-sm">
+            <p class="text-sm text-muted-foreground">Unikāli pieteikumi</p>
+            <p class="text-3xl font-bold">{uniqueApplicationsCount}</p>
         </div>
         <div class="rounded-xl border bg-card p-4 shadow-sm">
             <p class="text-sm text-muted-foreground">Kopā pulciņi</p>
