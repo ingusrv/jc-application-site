@@ -3,6 +3,8 @@ import { applicationsTable, clubsTable, type Application } from '$lib/server/db/
 import type { PageServerLoad, Actions } from './$types';
 import { and, asc, desc, eq, lte, ne } from 'drizzle-orm';
 import { requireRole } from '$lib/server/auth';
+import { env } from '$env/dynamic/private';
+import { getEmailClient } from '$lib/server/email';
 
 export type ApplicationWithClub = Application & {
     clubName: string;
@@ -237,6 +239,53 @@ export const actions: Actions = {
         } catch (err: any) {
             console.error("Database error while deleting application:", err);
             return { success: false, error: "Sistēmas kļūda" };
+        }
+    },
+    sendEmail: async ({ request, fetch }) => {
+        await requireRole(fetch, 'admin');
+
+        const formData = await request.formData();
+        const id = parseInt(formData.get('id')?.toString() ?? '', 10);
+        const recipient = formData.get('recipient')?.toString().trim() ?? '';
+        const subject = formData.get('subject')?.toString().trim() ?? '';
+        const body = formData.get('body')?.toString().trim() ?? '';
+
+        if (!Number.isInteger(id) || !recipient || !subject || !body) {
+            return {
+                success: false,
+                error: 'Saņēmējs, temats un ziņas teksts ir obligāti jānorāda',
+            };
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+            return { success: false, error: 'Norādiet derīgu e-pasta adresi' };
+        }
+
+        const senderAddress = env.ACS_SENDER_ADDRESS;
+
+        if (!senderAddress) {
+            console.error('ACS email configuration is missing');
+            return {
+                success: false,
+                error: 'E-pasta nosūtīšana nav konfigurēta sistēmā',
+            };
+        }
+
+        try {
+            const poller = await getEmailClient().beginSend({
+                senderAddress,
+                recipients: { to: [{ address: recipient }] },
+                content: { subject, plainText: body },
+            });
+            await poller.pollUntilDone();
+
+            return { success: true };
+        } catch (err: any) {
+            console.error('Error while sending application email:', err);
+            return {
+                success: false,
+                error: 'E-pastu neizdevās nosūtīt. Lūdzu, mēģiniet vēlreiz.',
+            };
         }
     },
 };

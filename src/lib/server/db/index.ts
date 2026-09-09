@@ -1,10 +1,8 @@
 import { drizzle, type NodeMsSqlDatabase } from 'drizzle-orm/node-mssql';
 import sql from 'mssql';
 import * as schema from './schema';
-import * as dotenv from 'dotenv';
 import { runMigrations } from './migrate';
-
-dotenv.config();
+import { env } from '$env/dynamic/private';
 
 let dbInstance: NodeMsSqlDatabase<typeof schema> | null = null;
 let connectionPool: sql.ConnectionPool | null = null;
@@ -15,7 +13,7 @@ export async function getDbPool(): Promise<sql.ConnectionPool> {
 		return connectionPool;
 	}
 
-	const connectionString = process.env.DATABASE_URL;
+	const connectionString = env.DATABASE_URL;
 
 	if (!connectionString) {
 		throw new Error('DATABASE_URL environment variable is not set');

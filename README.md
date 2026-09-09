@@ -8,23 +8,21 @@ Install dependencies:
 ```bash
 npm install
 ```
-
-Copy `.env.example` to `.env` and configure `DATABASE_URL`.
-
 For local development with Docker:
+Configure `LOCAL_DB_SA_PASSWORD` in `.env` and then you can run
 ```bash
 npm run docker:db
 ```
+To connect to the database, configure `DATABASE_URL` in `.env`
+To enable email sending from the applications page, also configure `ACS_CONNECTION_STRING` and `ACS_SENDER_ADDRESS` with a verified Azure Communication Services Email sender.
 
 ## Development
 
 ```bash
+npm run db:generate  # Generate migrations
 npm run dev          # Start dev server (http://localhost:5173)
 npm run build        # Build for production
 npm run check        # Type check
-npm run db:generate  # Generate migrations
-npm run db:push      # Push schema to database
-npm run docker:all   # Run SWA emulator + database
 ```
 
 ## Deployment
@@ -35,6 +33,7 @@ Required Azure configuration:
 - Runtime stack: `Node 24 LTS`
 - Startup command: `npm start`
 - Set `DATABASE_URL` in App Service configuration
+- Set `ACS_CONNECTION_STRING` and `ACS_SENDER_ADDRESS` in App Service configuration for application emails
 - Enable App Service built-in authentication (Microsoft Entra ID) and set the app to require authentication for admin routes if needed
 - Set `PUBLIC_ENABLE_AUTH=true` when the built-in auth is enabled
 

@@ -5,6 +5,7 @@
     import { Button, buttonVariants } from "$lib/components/ui/button/index";
     import { Input } from "$lib/components/ui/input/index";
     import { Label } from "$lib/components/ui/label/index";
+    import { Textarea } from "$lib/components/ui/textarea/index";
     import * as Select from "$lib/components/ui/select/index";
     import { cn } from "$lib/utils";
     import { enhance } from "$app/forms";
@@ -18,6 +19,8 @@
         List,
         Trash2,
         RefreshCw,
+        Mail,
+        LoaderCircle,
     } from "@lucide/svelte";
 
     let {
@@ -35,6 +38,13 @@
     let editingApplication = $state<ApplicationWithClub | null>(null);
     let editDialogOpen = $state(false);
     let formSubmissionError = $state("");
+    let emailingApplication = $state<ApplicationWithClub | null>(null);
+    let emailDialogOpen = $state(false);
+    let emailSubmissionError = $state("");
+    let emailRecipient = $state("");
+    let emailSubject = $state("");
+    let emailBody = $state("");
+    let emailSending = $state(false);
     let otherClubsApplication = $state<ApplicationWithClub | null>(null);
     let otherClubsDialogOpen = $state(false);
     let recalculationMessage = $state("");
@@ -79,6 +89,35 @@
                 application.personCode.trim() === personCode,
         );
     });
+
+    function openEmailDialog(application: ApplicationWithClub): void {
+        emailingApplication = application;
+        emailRecipient = application.primaryGuardianEmail?.trim() || "";
+        emailSubject = `Informācija par pieteikumu pulciņā "${application.clubName}"`;
+        emailBody = "";
+        emailSubmissionError = "";
+        emailDialogOpen = true;
+    }
+
+    function getManualEmailUrl(
+        recipient: string,
+        subject: string,
+        body: string,
+    ): string {
+        return `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    function handleEmailSubmit({ result }: any): void {
+        if (result.type === "success" && result.data.success) {
+            emailDialogOpen = false;
+            emailingApplication = null;
+            emailSubmissionError = "";
+        } else {
+            emailSubmissionError =
+                result.data?.error ||
+                "Kļūda nosūtot e-pastu. Lūdzu, mēģiniet vēlreiz.";
+        }
+    }
 
     const clubGroups = $derived.by(() => {
         const groups = new Map<
@@ -360,6 +399,19 @@
                                                 variant="secondary"
                                                 class="cursor-pointer"
                                                 onclick={() =>
+                                                    openEmailDialog(
+                                                        application,
+                                                    )}
+                                            >
+                                                <Mail
+                                                    data-icon="inline-start"
+                                                />
+                                                Sūtīt e-pastu
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                class="cursor-pointer"
+                                                onclick={() =>
                                                     openOtherClubsDialog(
                                                         application,
                                                     )}
@@ -408,7 +460,6 @@
             </section>
         {/each}
     {/if}
-    <!-- </div> -->
 </div>
 
 <Dialog.Root bind:open={otherClubsDialogOpen}>
@@ -786,6 +837,113 @@
                 }}
             >
                 Aizvērt
+            </Dialog.Close>
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={emailDialogOpen}>
+    <Dialog.Content class="max-w-2xl">
+        <Dialog.Header>
+            <Dialog.Title>Sūtīt e-pastu</Dialog.Title>
+            <Dialog.Description>
+                Nosūtiet ziņu pieteikuma kontaktpersonai.
+            </Dialog.Description>
+        </Dialog.Header>
+
+        {#if emailSubmissionError}
+            <div class="text-red-500" role="alert">{emailSubmissionError}</div>
+        {/if}
+
+        {#if emailingApplication}
+            <form
+                method="post"
+                action="?/sendEmail"
+                use:enhance={() => {
+                    emailSending = true;
+
+                    return async ({ result, update }) => {
+                        try {
+                            handleEmailSubmit({ result });
+                            await update();
+                        } finally {
+                            emailSending = false;
+                        }
+                    };
+                }}
+                class="flex w-full flex-col gap-4"
+            >
+                <input type="hidden" name="id" value={emailingApplication.id} />
+
+                <div class="flex flex-col gap-2">
+                    <Label for="email-recipient">Saņēmējs</Label>
+                    <Input
+                        id="email-recipient"
+                        name="recipient"
+                        type="email"
+                        bind:value={emailRecipient}
+                        required
+                        maxlength={255}
+                    />
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <Label for="email-subject">Temats</Label>
+                    <Input
+                        id="email-subject"
+                        name="subject"
+                        bind:value={emailSubject}
+                        required
+                        maxlength={255}
+                    />
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <Label for="email-body">Ziņa</Label>
+                    <Textarea
+                        id="email-body"
+                        name="body"
+                        bind:value={emailBody}
+                        required
+                        maxlength={10000}
+                        rows={8}
+                    />
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <Button
+                        href={getManualEmailUrl(
+                            emailRecipient,
+                            emailSubject,
+                            emailBody,
+                        )}
+                        variant="outline"
+                    >
+                        <Mail data-icon="inline-start" />
+                        Sūtīt manuāli
+                    </Button>
+                    <Button type="submit" disabled={emailSending}>
+                        {#if emailSending}
+                            <LoaderCircle class="size-4 animate-spin" />
+                            <span>Nosūta...</span>
+                        {:else}
+                            <Mail data-icon="inline-start" />
+                            <span>Nosūtīt</span>
+                        {/if}
+                    </Button>
+                </div>
+            </form>
+        {/if}
+
+        <Dialog.Footer>
+            <Dialog.Close
+                type="button"
+                class={buttonVariants({ variant: "outline" })}
+                onclick={() => {
+                    emailDialogOpen = false;
+                }}
+            >
+                Atcelt
             </Dialog.Close>
         </Dialog.Footer>
     </Dialog.Content>
