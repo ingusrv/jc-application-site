@@ -5,6 +5,7 @@ import { and, asc, desc, eq, lte, ne } from 'drizzle-orm';
 import { requireRole } from '$lib/server/auth';
 import { env } from '$env/dynamic/private';
 import { getEmailClient } from '$lib/server/email';
+import { isApplicationStatus } from '$lib/applicationStatus';
 
 export type ApplicationWithClub = Application & {
     clubName: string;
@@ -101,6 +102,12 @@ export const actions: Actions = {
             const db = await getDb();
             const personCode = formData.get('personCode')?.toString().trim() ?? '';
             const clubId = parseInt(formData.get('clubId')?.toString() ?? '', 10);
+            const status = formData.get('status')?.toString() ?? '';
+
+            if (!isApplicationStatus(status)) {
+                return { success: false, error: "Izvēlētais statuss nav pieejams" };
+            }
+
             const selectedClub = await db
                 .select({ id: clubsTable.id })
                 .from(clubsTable)
@@ -150,7 +157,7 @@ export const actions: Actions = {
                     secondaryGuardianLastName: optionalValue('secondaryGuardianLastName'),
                     secondaryGuardianEmail: optionalValue('secondaryGuardianEmail'),
                     secondaryGuardianPhone: optionalValue('secondaryGuardianPhone'),
-                    status: formData.get('status') as string,
+                    status,
                     priority: parseInt(formData.get('priority') as string, 10),
                 })
                 .where(eq(applicationsTable.id, id));

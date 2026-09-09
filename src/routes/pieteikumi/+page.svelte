@@ -8,6 +8,7 @@
     import { Textarea } from "$lib/components/ui/textarea/index";
     import * as Select from "$lib/components/ui/select/index";
     import { cn } from "$lib/utils";
+    import { ApplicationStatus } from "$lib/applicationStatus";
     import { enhance } from "$app/forms";
     import { invalidateAll } from "$app/navigation";
     import {
@@ -50,6 +51,9 @@
     let recalculationMessage = $state("");
     let expandedClubIds = $state<Record<number, boolean>>({});
     let selectedClubId = $state("");
+    let selectedStatus = $state<ApplicationStatus>(
+        ApplicationStatus.Processing,
+    );
 
     const selectedClub = $derived(
         data.clubs.find((club) => club.id.toString() === selectedClubId),
@@ -348,8 +352,16 @@
                             {#each clubGroup.applications as application, index}
                                 <Table.Row
                                     class={cn(
-                                        isDuplicateApplication(application) &&
-                                            "bg-yellow-100 hover:bg-yellow-200",
+                                        application.status ===
+                                            ApplicationStatus.Approved
+                                            ? "bg-green-100 hover:bg-green-200"
+                                            : application.status ===
+                                                ApplicationStatus.Rejected
+                                              ? "bg-red-100 hover:bg-red-200"
+                                              : isDuplicateApplication(
+                                                    application,
+                                                ) &&
+                                                "bg-yellow-100 hover:bg-yellow-200",
                                     )}
                                 >
                                     <Table.Cell>{index + 1}</Table.Cell>
@@ -401,6 +413,8 @@
                                                         application;
                                                     selectedClubId =
                                                         application.clubId.toString();
+                                                    selectedStatus =
+                                                        application.status as ApplicationStatus;
                                                     formSubmissionError = "";
                                                     editDialogOpen = true;
                                                 }}
@@ -505,7 +519,18 @@
                                 )}
                             </p>
                             <p class="mt-2 text-sm">
-                                Statuss: {application.status}, Prioritāte: {application.priority}
+                                Statuss:
+                                <span
+                                    class={application.status ===
+                                    ApplicationStatus.Approved
+                                        ? "text-green-700"
+                                        : application.status ===
+                                            ApplicationStatus.Rejected
+                                          ? "text-red-700"
+                                          : ""}
+                                >
+                                    {application.status}
+                                </span>, Prioritāte: {application.priority}
                             </p>
                         </div>
                     {/each}
@@ -1233,13 +1258,27 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col gap-2">
                         <Label for="edit-status">Statuss</Label>
-                        <Input
-                            id="edit-status"
+                        <Select.Root
+                            type="single"
                             name="status"
-                            value={editingApplication.status}
                             required
-                            maxlength={50}
-                        />
+                            bind:value={selectedStatus}
+                        >
+                            <Select.Trigger id="edit-status" class="w-full">
+                                <span class="w-full text-left">
+                                    {selectedStatus}
+                                </span>
+                            </Select.Trigger>
+                            <Select.Content>
+                                <Select.Group>
+                                    {#each Object.values(ApplicationStatus) as status}
+                                        <Select.Item value={status}>
+                                            {status}
+                                        </Select.Item>
+                                    {/each}
+                                </Select.Group>
+                            </Select.Content>
+                        </Select.Root>
                     </div>
                     <div class="flex flex-col gap-2">
                         <Label for="edit-priority">Prioritāte</Label>

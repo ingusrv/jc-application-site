@@ -1,5 +1,6 @@
 import { mssqlTable, int, nvarchar, datetime2, bit } from 'drizzle-orm/mssql-core';
 import { sql } from 'drizzle-orm';
+import { ApplicationStatus } from '../../applicationStatus';
 
 export const clubsTable = mssqlTable('clubs', {
 	id: int('id').identity({ seed: 1, increment: 1 }).primaryKey(),
@@ -35,7 +36,7 @@ export const applicationsTable = mssqlTable('applications', {
 	secondaryGuardianEmail: nvarchar('secondary_guardian_email', { length: 255 }),
 	secondaryGuardianPhone: nvarchar('secondary_guardian_phone', { length: 20 }),
 	clubId: int('club_id').references(() => clubsTable.id).notNull(),
-	status: nvarchar('status', { length: 50 }).default('apstrādē').notNull(),
+	status: nvarchar('status', { length: 50 }).default(ApplicationStatus.Processing).notNull(),
 	priority: int('priority').default(0).notNull(),
 	deleted: bit('deleted').default(false).notNull(),
 	createdAt: datetime2('created_at').default(sql`CURRENT_TIMESTAMP`).notNull()
