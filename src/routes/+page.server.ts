@@ -1,10 +1,11 @@
 import { getDb } from "$lib/server/db";
 import { applicationsTable, clubsTable, type Club } from "$lib/server/db/schema";
+import { ApplicationStatus } from "$lib/applicationStatus";
 import type { PageServerLoad, Actions } from "./$types";
 import { fail, message, superValidate } from "sveltekit-superforms";
 import { applicationFormSchema } from "./applicationFormSchema";
 import { zod4 } from "sveltekit-superforms/adapters";
-import { and, count, asc, eq } from "drizzle-orm";
+import { and, count, asc, eq, ne } from "drizzle-orm";
 
 export type ClubWithApplicationCount = Club & { applicationCount: number };
 
@@ -32,7 +33,12 @@ export const load: PageServerLoad = async () => {
                 count: count(applicationsTable.id),
             })
             .from(applicationsTable)
-            .where(eq(applicationsTable.deleted, false))
+            .where(
+                and(
+                    eq(applicationsTable.deleted, false),
+                    ne(applicationsTable.status, ApplicationStatus.Rejected),
+                ),
+            )
             .groupBy(applicationsTable.clubId);
 
         // Create a map for easy lookup
@@ -93,6 +99,7 @@ export const actions: Actions = {
                         eq(applicationsTable.personCode, personCode),
                         eq(applicationsTable.clubId, form.data.clubId),
                         eq(applicationsTable.deleted, false),
+                        ne(applicationsTable.status, ApplicationStatus.Rejected),
                     ),
                 );
 
@@ -111,6 +118,7 @@ export const actions: Actions = {
                     and(
                         eq(applicationsTable.personCode, personCode),
                         eq(applicationsTable.deleted, false),
+                        ne(applicationsTable.status, ApplicationStatus.Rejected),
                     ),
                 );
 

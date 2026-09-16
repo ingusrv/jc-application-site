@@ -18,6 +18,7 @@ export type ClubOption = {
     id: number;
     name: string;
     schedule: string;
+    maxParticipants: number;
 };
 
 export const load: PageServerLoad = async ({ fetch, request }) => {
@@ -67,6 +68,7 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
                 id: clubsTable.id,
                 name: clubsTable.name,
                 schedule: clubsTable.schedule,
+                maxParticipants: clubsTable.maxParticipants,
             })
             .from(clubsTable)
             .where(eq(clubsTable.deleted, false))

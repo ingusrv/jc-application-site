@@ -195,6 +195,23 @@
         return applicationKeys.size;
     });
 
+    const approvedApplicationsCount = $derived(
+        data.applications.filter(
+            (application) => application.status === ApplicationStatus.Approved,
+        ).length,
+    );
+
+    const waitingListApplicationsCount = $derived(
+        data.applications.filter(
+            (application) =>
+                application.status === ApplicationStatus.WaitingList,
+        ).length,
+    );
+
+    const totalClubPlaces = $derived(
+        data.clubs.reduce((total, club) => total + club.maxParticipants, 0),
+    );
+
     function isDuplicateApplication(application: ApplicationWithClub): boolean {
         const personCode = application.personCode.trim();
         return (
@@ -270,7 +287,7 @@
         {/if}
     </div>
 
-    <div class="grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+    <div class="grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         <div class="rounded-xl border bg-card p-4 shadow-sm">
             <p class="text-sm text-muted-foreground">Kopā pieteikumi</p>
             <p class="text-3xl font-bold">{data.applications.length}</p>
@@ -282,6 +299,18 @@
         <div class="rounded-xl border bg-card p-4 shadow-sm">
             <p class="text-sm text-muted-foreground">Kopā pulciņi</p>
             <p class="text-3xl font-bold">{data.clubs.length}</p>
+        </div>
+        <div class="rounded-xl border bg-card p-4 shadow-sm">
+            <p class="text-sm text-muted-foreground">Kopā vietas</p>
+            <p class="text-3xl font-bold">{totalClubPlaces}</p>
+        </div>
+        <div class="rounded-xl border bg-card p-4 shadow-sm">
+            <p class="text-sm text-muted-foreground">Apstiprināti</p>
+            <p class="text-3xl font-bold">{approvedApplicationsCount}</p>
+        </div>
+        <div class="rounded-xl border bg-card p-4 shadow-sm">
+            <p class="text-sm text-muted-foreground">Gaidīšanas rindā</p>
+            <p class="text-3xl font-bold">{waitingListApplicationsCount}</p>
         </div>
     </div>
 
